@@ -26,7 +26,7 @@ class UserController {
   public login: RequestHandler<unknown, unknown, ILoginBody, unknown> = async (
     req,
     res,
-    next
+    next,
   ) => {
     const reqBody = req.body;
     try {
@@ -49,7 +49,7 @@ class UserController {
   public getUserName: RequestHandler<{ username: string }> = async (
     req,
     res,
-    next
+    next,
   ) => {
     const { username } = req.params;
     try {
@@ -62,7 +62,7 @@ class UserController {
   public getEmail: RequestHandler<{ email: string }> = async (
     req,
     res,
-    next
+    next,
   ) => {
     const { email } = req.params;
     try {

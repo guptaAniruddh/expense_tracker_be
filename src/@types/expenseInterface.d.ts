@@ -1,4 +1,5 @@
 export interface IAddExpenseBody {
+  type?: string;
   title?: string;
   amount?: number;
   date?: Date;
@@ -8,8 +9,9 @@ export interface IUpdateParams {
   id: string;
 }
 export interface IUpdateBodyExpense {
-  title: string;
-  amount: number;
-  date: Date;
-  category: string;
+  type?: string;
+  title?: string;
+  amount?: number;
+  date?: Date;
+  category?: string;
 }

@@ -1,6 +1,6 @@
 import createHttpError from "http-errors";
 import multer from "multer";
-console.log("ehjqhqh");
+
 export const upload = multer({
         
         dest: 'uploads/',

@@ -30,7 +30,7 @@ export default class userService {
     if (existingusername) {
       throw createHttpError(
         400,
-        "Username already exist ,Please chhoose a different account or login instead"
+        "Username already exist ,Please chhoose a different account or login instead",
       );
     }
 
@@ -38,7 +38,7 @@ export default class userService {
     if (existingemail) {
       throw createHttpError(
         400,
-        "Username already exist ,Please chhoose a different account or login instead"
+        "Username already exist ,Please chhoose a different account or login instead",
       );
     }
 

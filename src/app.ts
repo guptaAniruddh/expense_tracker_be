@@ -15,14 +15,14 @@ class App {
   constructor(routes: { router: Router }[]) {
     this.app = express();
     this.env = new Env().validate();
-    
+
     this.routes = routes;
     this.app.use(morgan("dev"));
     this.app.use(cors());
     this.app.use(express.json());
     this.sessionMiddleware();
     this.errorMiddleware();
-    // this.authenticationMiddleware();
+    //
     this.initializeRoutes(this.routes);
   }
   private sessionMiddleware() {
@@ -38,25 +38,23 @@ class App {
         store: MongoStore.create({
           mongoUrl: this.env.MONGO_CONNECTION_STRING,
         }),
-      })
+      }),
     );
   }
-  private authenticationMiddleware(){
-    this.app.use((req:Request,res:Response,next:NextFunction) => {
-      const token = req.header('token');
-      if(!token)
-      next( createHttpError(400,"Please login or sign in first"));
-
-    })
+  private authenticationMiddleware() {
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
+      const token = req.header("token");
+      if (!token) next(createHttpError(400, "Please login or sign in first"));
+    });
   }
 
   private initializeRoutes(routes: { router: Router }[]) {
     routes.forEach((route) => {
+      // console.log('>>>>>>>>>>>>>>>>>>>>>>>>', route);
       this.app.use("/", route.router);
     });
     this.endpointErrorHandler();
   }
-   
 
   private endpointErrorHandler() {
     this.app.use((req: Request, res: Response, next: NextFunction) => {
@@ -77,7 +75,7 @@ class App {
         } catch (err) {
           next(err);
         }
-      }
+      },
     );
   }
 }

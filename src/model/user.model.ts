@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     select: false,
   },
+  balance: {
+    type: Number,
+    required: true,
+    select: false,
+  },
 });
 
 export const User = mongoose.model("Users", userSchema);

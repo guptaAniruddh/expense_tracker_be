@@ -13,6 +13,7 @@ export default class UserDao {
       username: username,
       email: email,
       password,
+      balance: 0,
     });
     return await newuser.save();
   }
@@ -21,6 +22,24 @@ export default class UserDao {
       .select("+password")
       .exec();
   }
+  public async getBalance(user_id: string) {
+    const user = await User.findOne({ _id: user_id }).select("balance");
+    return user;
+  }
+  public async addAmount(user_id: string, amount: number, balance: number) {
+    balance = balance + amount;
+    return await User.updateOne({ _id: user_id }, { balance: balance });
+  }
+  public async updateBalance(
+    user_id: string,
+    balance: number,
+    oldamount: number,
+    amount: number,
+  ) {
+    const newbalance: number = balance - oldamount + amount;
+    return await User.updateOne({ _id: user_id }, { balance: newbalance });
+  }
+
   // public async getUserById(id:string){
   //     const existinguser = await User.findById(id).exec();
   //     return existinguser;
