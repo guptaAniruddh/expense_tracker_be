@@ -5,7 +5,7 @@ export class AuthMiddleware {
   constructor() {}
   public authentication :RequestHandler = (req,res,next) =>{
     
-  const token = req.session.userId;
+  const token = req.header('token');
   if(!token)
   next(createHttpError(400,"Please login or signup to access this"));
 else

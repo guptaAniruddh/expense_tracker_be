@@ -9,10 +9,12 @@ class ExpenseController {
   private expenseService = new ExpenseService();
   public getExpense: RequestHandler = async (req, res, next) => {
     try {
-      const userId = req.session.userId;
+      const userId = req.header("token");
 
       console.log(userId);
-      const expenses = await this.expenseService.getExpense(userId);
+      const page = req.header('pages');
+      const pageSize = req.header('pageSize');
+      const expenses = await this.expenseService.getExpense(userId,page,pageSize);
       res.status(200).json(expenses);
     } catch (err) {
       next(err);
@@ -28,7 +30,7 @@ class ExpenseController {
     const reqBody = req.body;
 
     try {
-      const userId = req.session.userId;
+      const userId = req.header("token");
       console.log(userId);
       const expense = await this.expenseService.addExpense(reqBody, userId);
       res.status(201).json(expense);
@@ -44,7 +46,7 @@ class ExpenseController {
   ) => {
     const { id: expenseId } = req.params;
     try {
-      const userId = req.session.userId;
+      const userId = req.header("token");
       const expense = await this.expenseService.getExpenseById(
         expenseId,
         userId,
@@ -64,7 +66,7 @@ class ExpenseController {
     const { id: id } = req.params;
     const reqBody = req.body;
     try {
-      const userId = req.session.userId;
+      const userId = req.header("token");
       const newExpense = await this.expenseService.updateExpense(
         id,
         reqBody,
@@ -78,7 +80,7 @@ class ExpenseController {
   public deleteExpense: RequestHandler = async (req, res, next) => {
     const id = req.params.id;
     try {
-      const userId = req.session.userId;
+      const userId = req.header("token");
       const expense = await this.expenseService.deleteExpense(id, userId);
       res.status(200).json(expense);
     } catch (err) {
@@ -89,10 +91,11 @@ class ExpenseController {
     console.log("file uploaded successfully");
     try {
       const file = req.file?.path;
-      const userId = req.session.userId;
+      const userId = req.header("token");
       console.log(userId);
-      await this.expenseService.addExpenseBulk(userId, file);
-      res.sendStatus(200);
+      
+      const result = await this.expenseService.addExpenseBulk(userId, file);
+      res.status(200).json(result);
     } catch (err) {
       next(err);
     }

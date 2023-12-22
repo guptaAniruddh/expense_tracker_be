@@ -13,13 +13,21 @@ import UserDao from "../dao/user.dao";
 export default class ExpenseService {
   private expenseDao = new ExpenseDao();
   private userDao = new UserDao();
-  public getExpense = async (userId: unknown) => {
+  public getExpense = async (userId: unknown,pageno:string|undefined,pagesize:string|undefined) => {
     if (!userId) throw createHttpError(404, "Please sign up or login before");
-    const data = await this.expenseDao.getExpense(userId.toString());
+   const  pageNo:number = Number(pageno);
+   const pageSize:number= Number(pagesize);
+    if(!pageNo || !pageSize)
+    throw createHttpError(400,"No pageNo and page sizes are given")
+    const data = await this.expenseDao.getExpense(userId.toString(),pageNo,pageSize);
+    const total_count = await this.expenseDao.getCount(userId.toString()); 
     const formattedData = data.map((expense) => {
       return {
-        ...expense,
-        date: expense.date.toISOString().split("T")[0],
+       data:{ ...expense,
+        date: expense.date.toISOString().split("T")[0]
+      },
+        total_count:total_count
+
       };
     });
     return formattedData;
@@ -37,7 +45,7 @@ export default class ExpenseService {
     }
     const type = createExpensePayload.type;
     const title = createExpensePayload.title;
-    let amount = createExpensePayload.amount;
+    const amount = createExpensePayload.amount;
     const date = createExpensePayload.date;
     const category = createExpensePayload.category;
     if (!type || !title || !amount || !date || !category) {
@@ -57,8 +65,11 @@ export default class ExpenseService {
     // });
 
     // console.log(balance + " "+amount);
-    const am = Number(amount);
-    if (type === "Debit") amount = -amount;
+    let am = Number(amount);
+    if (type == "Debit") {
+      console.log(type);
+      am = -am;
+    }
 
     this.userDao.addAmount(userId.toString(), am, balance);
     return await this.expenseDao.addExpense(

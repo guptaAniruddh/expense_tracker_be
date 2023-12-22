@@ -54,6 +54,10 @@ export default class ExternalRoutes {
     this.router.post(`${prefix}/login`, this.userController.login);
     this.router.post(`${prefix}/logout`, this.userController.logout);
     this.router.get(
+      `${prefix}/get_balance/:userId`,
+      this.userController.getBalance,
+    );
+    this.router.get(
       `${prefix}/username/:username"`,
       this.userController.getUserName,
     );

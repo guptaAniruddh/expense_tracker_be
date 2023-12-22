@@ -63,4 +63,14 @@ export default class userService {
     return existinguser;
   };
   public logout = async () => {};
+  public getBalance = async (userId: string) => {
+    // if(mongoose.isValidObjectId(userId)){
+    //   throw createHttpError(400,"Incorrect User id");
+    // }
+    const user = await this.userdao.getBalance(userId);
+    if (!user) {
+      throw createHttpError(400, "No user Found");
+    }
+    return user.balance;
+  };
 }

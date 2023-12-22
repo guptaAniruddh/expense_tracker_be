@@ -73,5 +73,18 @@ class UserController {
       next(err);
     }
   };
+  public getBalance: RequestHandler<{ userId: string }> = async (
+    req,
+    res,
+    next,
+  ) => {
+    const { userId } = req.params;
+    try {
+      const balance = await this.userService.getBalance(userId);
+      res.status(200).json(balance);
+    } catch (err) {
+      next(err);
+    }
+  };
 }
 export default UserController;
