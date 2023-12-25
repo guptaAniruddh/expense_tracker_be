@@ -12,9 +12,11 @@ class ExpenseController {
       const userId = req.header("token");
 
       console.log(userId);
-      const page = req.header('pages');
+      const page = req.header('pageNo');
       const pageSize = req.header('pageSize');
+      console.log(page+" "+pageSize);
       const expenses = await this.expenseService.getExpense(userId,page,pageSize);
+      console.log(expenses);
       res.status(200).json(expenses);
     } catch (err) {
       next(err);

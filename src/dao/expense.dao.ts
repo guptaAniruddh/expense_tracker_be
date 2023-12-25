@@ -9,11 +9,11 @@ class ExpenseDao {
 
   public getExpense = async (userId: string,pageNo:number,pageSize:number) => {
     return await this.expenseModel
-      .find({ userId: userId, is_delete: false }).skip(pageNo*pageSize).limit(pageSize)
+      .find({ userId: userId, is_delete: false }).skip((pageNo-1)*pageSize).limit(pageSize)
       .lean();
   };
   public getCount=async(userId:string)=>{
-    return await this.expenseModel.find({userId:userId}).countDocuments();
+    return await this.expenseModel.find({userId: userId, is_delete: false}).countDocuments();
   }
   public async addExpense(
     { type, title, amount, date, category }: IAddExpenseBody,
