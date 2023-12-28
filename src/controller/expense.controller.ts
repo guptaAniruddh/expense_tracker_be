@@ -10,14 +10,18 @@ class ExpenseController {
   public getExpense: RequestHandler = async (req, res, next) => {
     try {
       const userId = req.header("token");
+      const queryBody = req.query;
 
-      console.log(userId);
-      const page = req.header('pageNo');
-      const pageSize = req.header('pageSize');
+
+      // console.log(userId);
+     const page= req.query.pageNo;
+     const pageSize = req.query.pageSize;
       console.log(page+" "+pageSize);
-      const expenses = await this.expenseService.getExpense(userId,page,pageSize);
-      console.log(expenses);
-      res.status(200).json(expenses);
+  
+      
+      const expenses = await this.expenseService.getExpense(userId,page?.toString(),pageSize?.toString(),queryBody);
+      // console.log(expenses);
+       res.status(200).json(expenses);
     } catch (err) {
       next(err);
     }
@@ -33,14 +37,13 @@ class ExpenseController {
 
     try {
       const userId = req.header("token");
-      console.log(userId);
+      // console.log(userId);
       const expense = await this.expenseService.addExpense(reqBody, userId);
       res.status(201).json(expense);
     } catch (err) {
       next(err);
     }
   };
-
   public getExpenseById: RequestHandler<{ id: string }> = async (
     req,
     res,

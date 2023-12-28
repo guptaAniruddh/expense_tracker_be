@@ -1,16 +1,20 @@
+
 import {
   IAddExpenseBody,
   IUpdateBodyExpense,
+  iexpenseQuery,
 } from "../@types/expenseInterface";
 import { Expense } from "../model/expense.model";
 class ExpenseDao {
   private expenseModel = Expense;
   constructor() {}
 
-  public getExpense = async (userId: string,pageNo:number,pageSize:number) => {
-    return await this.expenseModel
-      .find({ userId: userId, is_delete: false }).skip((pageNo-1)*pageSize).limit(pageSize)
-      .lean();
+  public getExpense = async (userId: string,pageNo:number,pageSize:number,startdate:Date|undefined,endate:Date|undefined,result:iexpenseQuery) => {
+    // console.log('userId/////////', userId , pageSize, pageNo);
+    const data = await  this.expenseModel.find({userId:userId,is_delete:false,date:{$gt:startdate,$lt:endate}, ...result}).sort({_id:-1}).skip((pageNo-1)*pageSize).limit(pageSize)
+    .lean();
+    console.log(data);
+    return data;
   };
   public getCount=async(userId:string)=>{
     return await this.expenseModel.find({userId: userId, is_delete: false}).countDocuments();

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import {
   IAddExpenseBody,
   IUpdateBodyExpense,
+  iexpenseQuery,
 } from "../@types/expenseInterface";
 import ExpenseDao from "../dao/expense.dao";
 import createHttpError from "http-errors";
@@ -9,24 +10,44 @@ import Joi from "joi";
 import csvtojson from "csvtojson";
 import UserDao from "../dao/user.dao";
 // import { create } from "connect-mongo";
-
+import R from "ramda"
 export default class ExpenseService {
   private expenseDao = new ExpenseDao();
   private userDao = new UserDao();
   public getExpense = async (
     userId: unknown,
     pageno: string | undefined,
-    pagesize: string | undefined
+    pagesize: string | undefined,
+    queryBody:iexpenseQuery,
   ) => {
+    console.log(userId);
     if (!userId) throw createHttpError(404, "Please sign up or login before");
     const pageNo: number = Number(pageno);
     const pageSize: number = Number(pagesize);
     if (!pageNo || !pageSize)
       throw createHttpError(400, "No pageNo and page sizes are given");
+    const {type,title,amount,startdate,endate,category}=queryBody;
+    // console.log(type+" "+title+" "+amount+" "+date+" "+category);
+    const obj ={
+      type:type,
+      title:title,
+      amount:amount,
+      category:category,
+    }
+
+    const result= this.data(obj);
+    console.log(obj);
+    console.log(result);
+  
+
     const data = await this.expenseDao.getExpense(
       userId.toString(),
       pageNo,
-      pageSize
+      pageSize,
+      startdate,
+      endate,
+      result
+      
     );
     const total_count = await this.expenseDao.getCount(userId.toString());
     const formattedData = data.map((expense) => {
@@ -53,6 +74,7 @@ export default class ExpenseService {
     const amount = createExpensePayload.amount;
     const date = createExpensePayload.date;
     const category = createExpensePayload.category;
+    console.log(date);
     if (!type || !title || !amount || !date || !category) {
       throw createHttpError(400, "All fields are mandatory and required");
     }
@@ -88,7 +110,9 @@ export default class ExpenseService {
         404,
         "You haven't login ,login first to use the create Expenses"
       );
-    return await this.expenseDao.getExpenseById(id);
+    const data = await this.expenseDao.getExpenseById(id);
+    console.log(data);
+    return data ;
   };
   public updateExpense = async (
     id: string,
@@ -140,6 +164,7 @@ export default class ExpenseService {
       category,
     });
   };
+  public data   = R.pipe(R.filter((param)=>param!=undefined && param!=""))
   public deleteExpense = async (id: string, userId: unknown) => {
     if (!userId) throw createHttpError(400, "Please log in or sign in first");
     if (!mongoose.isValidObjectId(id)) {
