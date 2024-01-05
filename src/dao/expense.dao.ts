@@ -1,4 +1,3 @@
-
 import {
   IAddExpenseBody,
   IUpdateBodyExpense,
@@ -9,24 +8,42 @@ class ExpenseDao {
   private expenseModel = Expense;
   constructor() {}
 
-  public getExpense = async (userId: string,pageNo:number,pageSize:number,startdate:Date|undefined,endate:Date|undefined,result:iexpenseQuery) => {
+  public getExpense = async (
+    userId: string,
+    pageNo: number,
+    pageSize: number,
+    startdate: Date | undefined,
+    endate: Date | undefined,
+    result: iexpenseQuery,
+  ) => {
     // console.log('userId/////////', userId , pageSize, pageNo);
-    const data = await  this.expenseModel.find({userId:userId,is_delete:false,date:{$gt:startdate,$lt:endate}, ...result}).sort({_id:-1}).skip((pageNo-1)*pageSize).limit(pageSize)
-    .lean();
+    const data = await this.expenseModel
+      .find({
+        userId: userId,
+        is_delete: false,
+        date: { $gt: startdate, $lt: endate },
+        ...result,
+      })
+      .sort({ _id: -1 })
+      .skip((pageNo ) * pageSize)
+      .limit(pageSize)
+      .lean();
     console.log(data);
     return data;
   };
-  public getCount=async(userId:string)=>{
-    return await this.expenseModel.find({userId: userId, is_delete: false}).countDocuments();
-  }
+  public getCount = async (userId: string) => {
+    return await this.expenseModel
+      .find({ userId: userId, is_delete: false })
+      .countDocuments();
+  };
   public async addExpense(
     { type, title, amount, date, category }: IAddExpenseBody,
     userId: string,
   ) {
     console.log(userId);
-    console.log(
-      type + " " + title + " " + amount + " " + date + " " + category,
-    );
+    // console.log(
+    //   type + " " + title + " " + amount + " " + date + " " + category,
+    // );
 
     const expense = new Expense({
       type: type,

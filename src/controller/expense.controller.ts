@@ -12,16 +12,18 @@ class ExpenseController {
       const userId = req.header("token");
       const queryBody = req.query;
 
-
       // console.log(userId);
-     const page= req.query.pageNo;
-     const pageSize = req.query.pageSize;
-      console.log(page+" "+pageSize);
-  
-      
-      const expenses = await this.expenseService.getExpense(userId,page?.toString(),pageSize?.toString(),queryBody);
+      const page = req.query.page_no;
+      const pageSize = req.query.page_size;
+      console.log(page + " " + pageSize);
+      const expenses = await this.expenseService.getExpense(
+        userId,
+        page?.toString(),
+        pageSize?.toString(),
+        queryBody,
+      );
       // console.log(expenses);
-       res.status(200).json(expenses);
+      res.status(200).json(expenses);
     } catch (err) {
       next(err);
     }
@@ -98,7 +100,7 @@ class ExpenseController {
       const file = req.file?.path;
       const userId = req.header("token");
       console.log(userId);
-      
+
       const result = await this.expenseService.addExpenseBulk(userId, file);
       res.status(200).json(result);
     } catch (err) {
