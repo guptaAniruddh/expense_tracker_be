@@ -5,6 +5,7 @@ import {
   IUpdateParams,
 } from "../@types/expenseInterface";
 import ExpenseService from "../services/expense.service";
+import { Buffer } from "buffer";
 class ExpenseController {
   private expenseService = new ExpenseService();
   public getExpense: RequestHandler = async (req, res, next) => {
@@ -107,5 +108,31 @@ class ExpenseController {
       next(err);
     }
   };
+  public getExpenseCsv :RequestHandler = async(req,res,next) =>{
+    try {
+      const userId = req.header("token");
+      const queryBody = req.query;
+      console.log("Inside get Expense Controller CSv");
+      // console.log(userId);
+      const page = req.query.page_no;
+      const pageSize = req.query.page_size;
+      console.log(page + " " + pageSize);
+      const expenses = await this.expenseService.getExpenseCsv(
+        userId,
+        page?.toString(),
+        pageSize?.toString(),
+        queryBody,
+      );
+      // console.log(expenses);
+      console.log("Error Here");
+      // res.download(expenses, 'test.csv');
+      res.setHeader('Content-disposition',expenses.headerToSet);
+      res.set('Content-type','text/csv');
+      return res.status(200).send(expenses.csvData);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
+
 export default ExpenseController;

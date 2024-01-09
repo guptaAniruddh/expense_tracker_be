@@ -26,6 +26,8 @@ export default class ExternalRoutes {
       this.authMiddleware.authentication,
       this.expenseController.addExpenseBulk,
     );
+    this.router.get(`${prefix}/expenses_csv`
+  ,this.expenseController.getExpenseCsv);
     this.router.get(
       `${prefix}/:id`,
       this.authMiddleware.authentication,
@@ -42,11 +44,13 @@ export default class ExternalRoutes {
       this.authMiddleware.authentication,
       this.expenseController.addExpense,
     );
+    
     this.router.delete(
       `${prefix}/:id`,
       this.authMiddleware.authentication,
       this.expenseController.deleteExpense,
     );
+
   }
 
   public initialiseUserRoutes(prefix: string) {

@@ -12,8 +12,8 @@ class ExpenseDao {
     userId: string,
     pageNo: number,
     pageSize: number,
-    startdate: Date | undefined,
-    endate: Date | undefined,
+    startdate: Date ,
+    endate: Date,
     result: iexpenseQuery,
   ) => {
     // console.log('userId/////////', userId , pageSize, pageNo);
@@ -21,7 +21,7 @@ class ExpenseDao {
       .find({
         userId: userId,
         is_delete: false,
-        date: { $gt: startdate, $lt: endate },
+        date: { $gte: startdate, $lte: endate },
         ...result,
       })
       .sort({ _id: -1 })
